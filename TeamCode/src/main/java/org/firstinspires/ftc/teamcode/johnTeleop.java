@@ -14,26 +14,31 @@ import org.checkerframework.checker.units.qual.Angle;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp
+
 public class johnTeleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        //setting the motor names or something
+        //setting the motor names
         DcMotor frontL = hardwareMap.dcMotor.get("frontL");
         DcMotor backL = hardwareMap.dcMotor.get("backL");
         DcMotor frontR = hardwareMap.dcMotor.get("frontR");
         DcMotor backR = hardwareMap.dcMotor.get("backR");
+        DcMotor armBottomL = hardwareMap.dcMotor.get("armBottomL");
+        DcMotor armBottomR = hardwareMap.dcMotor.get("armBottomR");
+        DcMotor upperArm = hardwareMap.dcMotor.get("upperArm");
 
         //setting right side motors to reverse so we an do 1 and 1 instead of -1 and 1 (hooray)
         frontR.setDirection(DcMotorSimple.Direction.REVERSE);
         backR.setDirection(DcMotorSimple.Direction.REVERSE);
+        armBottomR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //fill this in once noah explains this
+        //imu is a class that creates a hardware map, this calls it and makes an object called iamu
         IMU iamu = hardwareMap.get(IMU.class, "iamu");
 
         //adjusting the orientation parameters to match our bot
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+            RevHubOrientationOnRobot.LogoFacingDirection.UP,
+            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
 
         //previous 3 lines don't do anything unless this exists
         iamu.initialize(parameters);
@@ -51,6 +56,7 @@ public class johnTeleop extends LinearOpMode {
             double x = gamepad1.left_stick_x;
             //rx is sideways movement? not sure yet
             double rx = gamepad1.right_stick_x;
+            double yArm = -gamepad2.left_stick_y;
 
             //resets the yaw on the robot if the options button is pressed
             if (gamepad1.options) {
@@ -76,7 +82,9 @@ public class johnTeleop extends LinearOpMode {
             frontL.setPower(fLPower);
             backL.setPower(bLPower);
             frontR.setPower(fRPower);
-            backR.setPower(bLPower);
+            backR.setPower(bRPower);
+            armBottomL.setPower(yArm);
+            armBottomR.setPower(yArm);
         }
     }
 }
